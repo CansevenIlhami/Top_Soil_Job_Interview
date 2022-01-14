@@ -12,12 +12,13 @@
     <?php 
 class TopspoilCalculator {
     public $bags;
+    public $Y;
     private $totalBags;
     
         function MeasurementUnit() {
             ?>
             <form name="MyForm" action="index.php" method="POST">
-                <input type="text" name="Name" placeholder="What is your name?" value="<?php @$_SESSION["Name"];?>" required> <br>
+                <input type="text" name="Name" placeholder="What is your name?" value="<?php echo $_SESSION["Name"]; ?>"  required></input> <br>
             <label>Please Select Your Measurement Unit:</label> 
                 <select name="MeasurementUnit" required>
                     <option name="MeasurementMetres">Metres</option>
@@ -55,8 +56,8 @@ class TopspoilCalculator {
         $feetToMeterHeight =  $_POST["Dimensionlength"] / 3.2808;
         $metresSquare = $feetToMeterHeight * $feetToMeterWidth;
         $X = $metresSquare * 0.025; 
-        $Y = $X * 1.4;
-        $this->bags = ceil($Y);
+        $this->Y = $X * 1.4;
+        $this->bags = ceil($this->Y);
         echo "You Need"." ".$this->bags." "."Bags of Top Soil For this one <br>"; 
 
         
@@ -68,8 +69,8 @@ class TopspoilCalculator {
             $YardToMeterHeight =  $_POST["Dimensionlength"] / 1.0936;
             $metresSquare = $YardToMeterHeight * $YardToMeterWidth;
             $X = $metresSquare * 0.025; 
-            $Y = $X * 1.4;
-            $this->bags = ceil($Y);
+            $this->Y = $X * 1.4;
+            $this->bags = ceil($this->Y);
             echo "You Need"." ".$this->bags." "."Bags of Top Soil For this one <br>"; 
 
         elseif(@$_POST["MeasurementUnit"] == "Metres"):
@@ -79,8 +80,8 @@ class TopspoilCalculator {
             $MeterHeight =  $_POST["Dimensionlength"];
             $metresSquare = $MeterHeight * $MeterWidth;
             $X = $metresSquare * 0.025; 
-            $Y = $X * 1.4;
-            $this->bags = ceil($Y);
+            $this->Y = $X * 1.4;
+            $this->bags = ceil($this->Y);
             echo "You Need"." ".$this->bags." "."Bags of Top Soil For this one <br>"; 
             
             
@@ -104,9 +105,9 @@ class TopspoilCalculator {
         
         @$sql = "insert into basket(Name,TotalBags) values(?,?)";
         @$inserter = $conn->prepare($sql);
-        @$inserter->execute(array($name,$this->bags));
+        @$inserter->execute(array($name,$this->Y));
 
-        @$sqlSum = $conn->prepare("select SUM(TotalBags) as value from basket WHERE Name=?");
+        @$sqlSum = $conn->prepare("select CEIL(SUM(TotalBags)) as value from basket WHERE Name=?");
         @$sqlSum->execute(array($name));
         $row = $sqlSum->fetch(PDO::FETCH_ASSOC);
         echo "You Need". " ". $row["value"]. " "."Bags of Top soil for all.";
