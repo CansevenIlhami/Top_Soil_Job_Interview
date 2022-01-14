@@ -94,12 +94,14 @@ class TopspoilCalculator {
         $username = "root";
         $password = "";
         
-
+        
 
         $conn = new PDO("mysql:host=$servername;dbname=test", $username, $password);
         
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+
+        
         @$sql = "insert into basket(Name,TotalBags) values(?,?)";
         @$inserter = $conn->prepare($sql);
         @$inserter->execute(array($name,$this->bags));
@@ -108,6 +110,11 @@ class TopspoilCalculator {
         @$sqlSum->execute(array($name));
         $row = $sqlSum->fetch(PDO::FETCH_ASSOC);
         echo "You Need". " ". $row["value"]. " "."Bags of Top soil for all.";
+
+        $sqlCollectData = $conn->prepare("insert into myvalues(Name,MeasurementUnit,DepthMeasurementUnit,Dimensionwidth,Dimensionlength,Dimensiondepth) values(?,?,?,?,?,?)");
+        $sqlCollectData->execute(array($name,@$_POST["MeasurementUnit"],@$_POST["DepthMeasurementUnit"],@$_POST["Dimensionwidth"],@$_POST["Dimensionlength"],@$_POST["Dimensiondepth"]));
+       
+
     }
 }
 
